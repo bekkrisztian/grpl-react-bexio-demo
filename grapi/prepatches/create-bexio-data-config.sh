@@ -534,5 +534,154 @@ echo '[
                 }
             }
         }
+    },
+    {
+        "ds": "external",
+        "controller": "Invoice",
+        "method": "get",
+        "apiUri": "/invoice/list",
+        "description": "Retrieve invoice data from Bexio.",
+        "url": "https://api.bexio.com/2.0/kb_invoice",
+        "createModel": true,
+        "modelName": "Invoice",
+        "queryParams": {
+            "order_by": {
+                "type": "string",
+                "enum": [
+                    "id",
+                    "total",
+                    "total_net",
+                    "total_gross",
+                    "updated_at"
+                ]
+            },
+             "limit": {
+                "type": "number"
+            },
+            "offset": {
+                "type": "number"
+            }
+        },
+        "apiFunction": "getBexioInvoices",
+        "responses": {
+            "200": {
+                "schema": {
+                    "type": "array",
+                    "properties": {
+                        "id": {
+                            "type": "number"
+                        },
+                        "document_nr": {
+                            "type": "string"
+                        },
+                        "title": {
+                            "type": "string"
+                        },
+                        "contact_id": {
+                            "type": "number"
+                        },
+                        "contact_sub_id": {
+                            "type": "number"
+                        },
+                        "user_id": {
+                            "type": "number"
+                        },
+                        "project_id": {
+                            "type": "number"
+                        },
+                        "logopaper_id": {
+                            "type": "number"
+                        },
+                        "language_id": {
+                            "type": "number"
+                        },
+                        "bank_account_id": {
+                            "type": "number"
+                        },
+                        "currency_id": {
+                            "type": "number"
+                        },
+                        "payment_type_id": {
+                            "type": "number"
+                        },
+                        "header": {
+                            "type": "string"
+                        },
+                        "footer": {
+                            "type": "string"
+                        },
+                        "total_gross": {
+                            "type": "string"
+                        },
+                        "total_net": {
+                            "type": "string"
+                        },
+                        "total_taxes": {
+                            "type": "string"
+                        },
+                        "total_received_payments": {
+                            "type": "string"
+                        },
+                        "total_credit_vouchers": {
+                            "type": "string"
+                        },
+                        "total_remaining_payments": {
+                            "type": "string"
+                        },
+                        "total": {
+                            "type": "string"
+                        },
+                        "total_rounding_difference": {
+                            "type": "number"
+                        },
+                        "mwst_type": {
+                            "type": "number"
+                        },
+                        "mwst_is_net": {
+                            "type": "boolean"
+                        },
+                        "show_position_taxes": {
+                            "type": "boolean"
+                        },
+                        "is_valid_from": {
+                            "type": "string"
+                        },
+                        "is_valid_to": {
+                            "type": "string"
+                        },
+                        "contact_address": {
+                            "type": "string"
+                        },
+                        "kb_item_status_id": {
+                            "type": "number"
+                        },
+                        "reference": {
+                            "type": "string"
+                        },
+                        "api_reference": {
+                            "type": "string"
+                        },
+                        "viewed_by_client_at": {
+                            "type": "string"
+                        },
+                        "updated_at": {
+                            "type": "string"
+                        },
+                        "esr_id": {
+                            "type": "number"
+                        },
+                        "qr_invoice_id": {
+                            "type": "number"
+                        },
+                        "template_slug": {
+                            "type": "string"
+                        },
+                        "network_link": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
     }
 ]' > ./config/bexio-options.json
