@@ -6,6 +6,8 @@
 env: {}
 # configuration for grapple ApplicationSet (gras)
 gras-deploy:
+  enabled: false
+gras:
   enabled: true
   gras: {}
   grapi:
@@ -22,9 +24,10 @@ gras-deploy:
           command:
             - bash
             - -c
-            - sleep 5; while ! mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "show databases;" 2>/dev/null; do echo -n .; sleep 2; done; if mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "USE classicmodelsid; SET @tablename := (select table_name from information_schema.tables where table_type = 'BASE TABLE' and table_schema = 'classicmodelsid' limit 1); set @qry1:= concat('select * from ',@tablename,' limit 1'); prepare stmt from @qry1 ; execute stmt ;" ; then echo "database already exists..."; else curl -o /tmp/classicmodelsid.sql https://raw.githubusercontent.com/grapple-solutions/grapple-test-data/main/classicmodelsid/classicmodelsid.sql; mysql -h $(host) -P $(port) -u $(username) -p$(password) < /tmp/classicmodelsid.sql; fi
+            - sleep 5; while ! mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "show databases;" 2>/dev/null; do echo -n .; sleep 2; done; mysql -h $(host) -P $(port) -u $(username) -p$(password) -e "CREATE DATABASE IF NOT EXISTS reactbexiodemo;"
     extraSecrets:
-      - grpl-test-cm-conn-credential
+      - grpl-reactbexiodemo-conn-credential
+      - bexio-config
     # volumes:
     #   - name: data
     #     emptyDir: {}
@@ -42,85 +45,11 @@ gras-deploy:
     #         file: "/data/db.json"
     #         localStorage: "db"
     datasources:
-      - name: classicmodelsid
-        spec:
-          mysql:
-            database: classicmodelsid
-            host: $(host)
-            name: classicmodelsid
-            password: $(password)
-            port: $(port)
-            url: ""
-            user: $(username)
-    discoveries:
-      - name: classicmodelsid
-        spec:
-          all: true
-          dataSource: classicmodelsid
-          disableCamelCase: false
-          schema: classicmodelsid
-    models:
-      - name: "clients"
-        spec:
-          name: clients
-          base: Entity
-          properties:
-            id:
-              type: number
-              id: true
-              required: true
-              generated: true
-            customerName:
-              type: string
-            customerLastname:
-              type: string
-            contactFirstName:
-              type: string
-            phone:
-              type: string
-            addressLine1:
-              type: string
-            addressLine2:
-              type: string
-            city:
-              type: string
-            state:
-              type: string
-            postalCode:
-              type: string
-            country:
-              type: string
-            creditLimit:
-              type: number
-    repositories:
-      - name: classicmodelsid
-        spec:
-          datasource: classicmodelsid
-          model: clients
-    # relations:
-    #   - name: "employees"
-    #     spec:
-    #       relationName: "employees"
-    #       sourceModel: "Customers"
-    #       destinationModel: "Employees"
-    #       foreignKeyName: "employeesId"
-    #       relationType: "belongsTo"
-    #       registerInclusionResolver: true
-    relations:
-      - name: employees
-        spec:
-          destinationModel: Employees
-          foreignKeyName: employeesId
-          registerInclusionResolver: true
-          relationName: employees
-          relationType: belongsTo
-          sourceModel: Customers
-    restcruds:
-      - name: "classicmodelsid"
-        spec:
-          datasource: "classicmodelsid"
+      - name: external
+        content: '{"name":"external","connector":"rest","disableMigration":true,"baseURL":"/sample","options":{"headers":{"accept":"application/json","content-type":"application/json", "Authorization": "Bearer ${BEXIO_TOKEN}"}}, "operations":[]}'
     controllers: []
     postpatches: []
+    prepatches: []
   gruim:
     # uiimagetag: "0.1.38"
     ssl: true
